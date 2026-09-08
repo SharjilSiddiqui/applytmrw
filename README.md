@@ -1,175 +1,367 @@
 # ApplyTMRW
 
-A full-stack job and internship application tracking platform.
+ApplyTMRW is a job opportunity tracking platform designed to help users organize, manage, and track their job applications in one place.
 
-ApplyTMRW helps users organize job and internship opportunities, track application progress, manage application statuses, and stay on top of important follow-ups and reminders.
+The project is being built as a full-stack application with a mobile client and a backend API.
 
-The project is built as a monorepo containing:
-
-- A mobile application built with React Native and Expo
-- A backend REST API built with NestJS
-- A PostgreSQL database managed with Prisma ORM
+The goal is to provide a simple and structured way for users to manage their job search process without losing track of opportunities, applications, and their progress.
 
 ---
 
-## Features
+# Table of Contents
 
-### Authentication
+- [Overview](#overview)
+- [Project Goals](#project-goals)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Database Setup](#database-setup)
+- [Running the Project](#running-the-project)
+- [Applications](#applications)
+- [Development](#development)
+- [Current Features](#current-features)
+- [Roadmap](#roadmap)
 
-- User registration
-- User login
-- Secure password hashing with bcrypt
-- JWT-based authentication
-- Protected API routes
-- User-level data isolation
+---
 
-### Opportunities
+# Overview
 
-- Create opportunities
-- View all opportunities
-- View a single opportunity
-- Update opportunities
-- Delete opportunities
+Searching and applying for jobs often involves managing opportunities across multiple platforms.
+
+Job opportunities may come from:
+
+- LinkedIn
+- Company career pages
+- Job boards
+- Referrals
+- Emails
+- Social media
+- Personal networks
+
+Keeping track of all these opportunities manually can quickly become difficult.
+
+ApplyTMRW aims to solve this problem by providing a centralized platform where users can manage their job opportunities and track their application progress.
+
+Users will be able to save opportunities and organize them based on their current application status.
+
+For example:
+
+```text
+Saved
+↓
+Applied
+↓
+Interviewing
+↓
+Offer
+```
+
+The platform is being developed as a full-stack application consisting of a mobile client and a backend API.
+
+---
+
+# Project Goals
+
+The primary goal of ApplyTMRW is to help users manage their job search process.
+
+The platform aims to provide a centralized system where users can:
+
+- Save job opportunities
+- Store job links
 - Track application status
-- Store opportunity metadata
-- Associate opportunities with individual users
+- Organize opportunities from multiple sources
+- Store company information
+- Store job descriptions
+- Manage their application pipeline
+- Securely access their own data
 
-### Reminders
+The application should also provide a strong foundation for future features such as:
 
-The database model for reminders is available.
+- Job reminders
+- Application deadlines
+- Interview tracking
+- Resume management
+- Analytics
+- Notifications
+- AI-powered features
+- Job opportunity extraction
+- Automated job tracking
 
-Reminder API and mobile functionality are currently under development.
+---
 
-Planned functionality includes:
+# Architecture
 
-- Application deadline reminders
-- Follow-up reminders
-- Interview reminders
-- Custom reminders
+ApplyTMRW is structured as a monorepo.
+
+A monorepo allows multiple applications to live inside a single repository while sharing tooling and dependencies.
+
+The current architecture consists of two primary applications:
+
+```text
+Mobile Application
+        │
+        │ HTTP Requests
+        ▼
+Backend API
+        │
+        │ Prisma ORM
+        ▼
+PostgreSQL Database
+```
+
+The mobile application communicates with the backend API.
+
+The backend API is responsible for:
+
+- Authentication
+- Authorization
+- Business logic
+- Database access
+- Data validation
+- API contracts
+
+The backend communicates with PostgreSQL through Prisma ORM.
 
 ---
 
 # Tech Stack
 
+## Backend
+
+The backend API is built using:
+
+- Node.js
+- TypeScript
+- NestJS
+- Prisma ORM
+- PostgreSQL
+- JWT
+- Passport
+- bcrypt
+- class-validator
+- class-transformer
+
+### NestJS
+
+NestJS is used as the backend framework.
+
+It provides a modular architecture based on:
+
+- Modules
+- Controllers
+- Services
+- Dependency Injection
+- Guards
+- Strategies
+
+### Prisma
+
+Prisma is used as the ORM.
+
+It is responsible for:
+
+- Database schema management
+- Database migrations
+- Type-safe database queries
+- Prisma client generation
+
+### PostgreSQL
+
+PostgreSQL is used as the primary relational database.
+
+### JWT
+
+JSON Web Tokens are used for authentication.
+
+After successful authentication, the API returns an access token.
+
+Protected endpoints require the token to be sent using the following HTTP header:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+### Passport
+
+Passport is used for authentication strategies.
+
+The API currently uses a JWT strategy for validating access tokens.
+
+### bcrypt
+
+Passwords are hashed using bcrypt before being stored in the database.
+
+Plain text passwords are never stored.
+
+---
+
 ## Mobile
+
+The mobile application is built using:
 
 - React Native
 - Expo
 - TypeScript
 
-## Backend
+Expo provides the development environment and tooling for the React Native application.
 
-- NestJS
-- TypeScript
-- Prisma ORM
-- PostgreSQL
+---
 
-## Authentication
+## Tooling
 
-- JSON Web Tokens (JWT)
-- Passport
-- Passport JWT
-- bcrypt
-
-## Validation
-
-- class-validator
-- class-transformer
-
-## Package Manager
+The project uses:
 
 - pnpm
+- Turborepo
+- TypeScript
+- ESLint
+- Prettier
+
+### pnpm
+
+pnpm is used as the package manager.
+
+### Turborepo
+
+Turborepo is used to manage and run tasks across the monorepo.
 
 ---
 
 # Project Structure
+
+The project currently follows the following structure:
 
 ```text
 apply-tmrw/
 │
 ├── apps/
 │   │
-│   ├── api/                            # NestJS backend
-│   │   │
+│   ├── api/
 │   │   ├── prisma/
-│   │   │   ├── schema.prisma           # Database schema
-│   │   │   └── migrations/             # Prisma migrations
-│   │   │
-│   │   ├── generated/
-│   │   │   └── prisma/                 # Generated Prisma client
+│   │   │   └── schema.prisma
 │   │   │
 │   │   ├── src/
-│   │   │   │
-│   │   │   ├── auth/                   # Authentication module
-│   │   │   │   ├── dto/
-│   │   │   │   ├── guards/
-│   │   │   │   ├── strategies/
-│   │   │   │   ├── auth.controller.ts
-│   │   │   │   ├── auth.module.ts
-│   │   │   │   └── auth.service.ts
-│   │   │   │
-│   │   │   ├── opportunities/          # Opportunities module
-│   │   │   │   ├── dto/
-│   │   │   │   ├── opportunities.controller.ts
-│   │   │   │   ├── opportunities.module.ts
-│   │   │   │   └── opportunities.service.ts
-│   │   │   │
-│   │   │   ├── prisma/                 # Prisma service
-│   │   │   │   ├── prisma.module.ts
-│   │   │   │   └── prisma.service.ts
-│   │   │   │
+│   │   │   ├── auth/
+│   │   │   ├── opportunities/
+│   │   │   ├── prisma/
 │   │   │   ├── app.controller.ts
 │   │   │   ├── app.module.ts
 │   │   │   ├── app.service.ts
 │   │   │   └── main.ts
 │   │   │
 │   │   ├── .env
+│   │   ├── .env.example
 │   │   ├── package.json
-│   │   └── tsconfig.json
+│   │   └── README.md
 │   │
-│   └── mobile/                         # Expo React Native application
-│       │
+│   └── mobile/
 │       ├── app/
-│       ├── assets/
+│       ├── components/
 │       ├── package.json
 │       └── ...
 │
 ├── package.json
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
+├── turbo.json
 ├── README.md
 └── .gitignore
 ```
 
 ---
 
+# Applications
+
+The repository currently contains two primary applications.
+
+---
+
+## API
+
+The backend API is located at:
+
+```text
+apps/api
+```
+
+The API is responsible for:
+
+- User registration
+- User authentication
+- Password hashing
+- JWT generation
+- JWT validation
+- Authorization
+- Opportunity management
+- Database access
+- Data validation
+
+Detailed backend documentation and API contracts are available in:
+
+```text
+apps/api/README.md
+```
+
+---
+
+## Mobile
+
+The mobile application is located at:
+
+```text
+apps/mobile
+```
+
+The mobile application is responsible for:
+
+- User interface
+- Authentication flows
+- Communicating with the backend API
+- Displaying opportunities
+- Creating opportunities
+- Updating opportunities
+- Managing the user's application pipeline
+
+The mobile application is built with:
+
+- React Native
+- Expo
+- TypeScript
+
+---
+
 # Prerequisites
 
-Before running the project, make sure the following software is installed.
+Before running the project, make sure the following tools are installed.
+
+---
 
 ## Node.js
 
-Install Node.js.
+Node.js is required to run the project.
 
-Check your installation:
-
-```bash
-node --version
-```
-
-Recommended:
+Recommended version:
 
 ```text
 Node.js 20+
+```
+
+Check your installed version:
+
+```bash
+node --version
 ```
 
 ---
 
 ## pnpm
 
-This project uses pnpm as its package manager.
+This project uses pnpm as the package manager.
 
-Install pnpm:
+Install pnpm globally:
 
 ```bash
 npm install -g pnpm
@@ -185,46 +377,35 @@ pnpm --version
 
 ## PostgreSQL
 
-The backend requires a PostgreSQL database.
+A PostgreSQL database is required for the backend API.
 
-Install PostgreSQL and verify that it is running.
+You can use:
 
-You can check your PostgreSQL installation with:
+- A local PostgreSQL installation
+- Docker
+- A hosted PostgreSQL provider
 
-```bash
-psql --version
-```
+The backend requires a PostgreSQL connection string.
 
-Create a database for the project:
+Example:
 
-```sql
-CREATE DATABASE applytmrw;
+```text
+postgresql://USER:PASSWORD@HOST:PORT/DATABASE
 ```
 
 ---
 
-## Expo Go
-
-To run the mobile application on a physical device, install Expo Go.
-
-Download Expo Go from:
-
-- Google Play Store for Android
-- Apple App Store for iOS
-
----
-
-# Installation
+# Getting Started
 
 ## 1. Clone the Repository
 
+Clone the repository:
+
 ```bash
-git clone <your-repository-url>
+git clone <repository-url>
 ```
 
----
-
-## 2. Navigate to the Project
+Move into the project directory:
 
 ```bash
 cd apply-tmrw
@@ -232,9 +413,9 @@ cd apply-tmrw
 
 ---
 
-## 3. Install Dependencies
+## 2. Install Dependencies
 
-Install all workspace dependencies:
+Install dependencies for all workspace packages:
 
 ```bash
 pnpm install
@@ -244,69 +425,79 @@ pnpm install
 
 # Environment Variables
 
-The API requires environment variables for the database and JWT authentication.
+The backend API requires environment variables.
 
-Create the following file:
+Create a local environment file.
+
+From the project root:
+
+```bash
+cp apps/api/.env.example apps/api/.env
+```
+
+Alternatively, create the file manually:
 
 ```text
 apps/api/.env
 ```
 
-Add:
+Example configuration:
 
 ```env
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/applytmrw"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 
-JWT_SECRET="your-super-secret-jwt-key"
-
-JWT_EXPIRES_IN="7d"
-```
-
-Replace:
-
-```text
-USER
-PASSWORD
-```
-
-with your PostgreSQL credentials.
-
-For example:
-
-```env
-DATABASE_URL="postgresql://postgres:password@localhost:5432/applytmrw"
-
-JWT_SECRET="replace-this-with-a-secure-secret"
+JWT_SECRET="replace-with-a-secure-secret"
 
 JWT_EXPIRES_IN="7d"
 ```
 
 ---
 
-## Generate a Secure JWT Secret
+## Environment Variables
 
-You can generate a secure JWT secret using:
+### DATABASE_URL
 
-```bash
-openssl rand -base64 32
-```
+The PostgreSQL database connection string.
 
-Then add the generated value:
+Example:
 
 ```env
-JWT_SECRET="generated-secret-here"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 ```
 
-> Never commit your `.env` file to Git.
+---
+
+### JWT_SECRET
+
+The secret used to sign and verify JWT tokens.
+
+Example:
+
+```env
+JWT_SECRET="your-secure-secret"
+```
+
+Use a strong and secure value.
+
+Do not commit production secrets to version control.
+
+---
+
+### JWT_EXPIRES_IN
+
+The duration for which an access token remains valid.
+
+Example:
+
+```env
+JWT_EXPIRES_IN="7d"
+```
 
 ---
 
 # Database Setup
 
-ApplyTMRW uses:
-
-- PostgreSQL
-- Prisma ORM
+The backend uses Prisma ORM.
 
 The Prisma schema is located at:
 
@@ -318,35 +509,48 @@ apps/api/prisma/schema.prisma
 
 ## Generate the Prisma Client
 
-From the project root:
+Move to the API directory:
 
 ```bash
-pnpm --filter api prisma generate
+cd apps/api
 ```
 
-This generates the Prisma client used by the NestJS backend.
+Generate the Prisma client:
+
+```bash
+pnpm prisma generate
+```
 
 ---
 
 ## Run Database Migrations
 
-Run:
+To create and apply migrations:
 
 ```bash
-pnpm --filter api prisma migrate dev
+pnpm prisma migrate dev
 ```
 
-If you need to create a new migration:
+This will:
+
+- Create a migration
+- Apply the migration
+- Update the database schema
+- Regenerate the Prisma client
+
+---
+
+## Push the Schema
+
+During development, you may use:
 
 ```bash
-pnpm --filter api prisma migrate dev --name migration_name
+pnpm prisma db push
 ```
 
-For example:
+This synchronizes the Prisma schema with the database.
 
-```bash
-pnpm --filter api prisma migrate dev --name add_reminders
-```
+For production environments, migrations should generally be preferred.
 
 ---
 
@@ -357,564 +561,43 @@ Prisma Studio provides a graphical interface for viewing and editing database da
 Run:
 
 ```bash
-pnpm --filter api prisma studio
+pnpm prisma studio
 ```
 
-Prisma Studio will open in your browser.
+Prisma Studio will start a local web interface.
 
 ---
 
 # Running the Project
 
-From the root directory:
+Return to the repository root:
+
+```bash
+cd ../..
+```
+
+Start the development environment:
 
 ```bash
 pnpm dev
 ```
 
-This starts both applications:
+This starts the development tasks configured for the workspace.
 
-- NestJS API
-- Expo Metro Bundler
+Typically:
 
----
-
-# Running the API
-
-Run only the backend:
-
-```bash
-pnpm --filter api dev
-```
-
-The API runs locally at:
-
-```text
-http://localhost:3000
-```
+- The API runs on port `3000`
+- Expo starts the Metro bundler
 
 ---
 
-# Running the Mobile Application
+# Running Individual Applications
 
-Run only the Expo application:
+Depending on the configured workspace scripts, applications can also be started individually.
 
-```bash
-pnpm --filter mobile dev
-```
+## API
 
-Expo will start the Metro Bundler and display a QR code.
-
-Scan the QR code using:
-
-- Expo Go on Android
-- Camera / Expo Go on iOS
-
----
-
-# API Documentation
-
-The API currently runs at:
-
-```text
-http://localhost:3000
-```
-
----
-
-# Authentication
-
-## Register
-
-Create a new user account.
-
-### Endpoint
-
-```http
-POST /auth/register
-```
-
-### Request Body
-
-```json
-{
-  "email": "test@example.com",
-  "password": "password123"
-}
-```
-
-### Response
-
-```json
-{
-  "accessToken": "JWT_TOKEN",
-  "user": {
-    "id": "USER_ID",
-    "email": "test@example.com"
-  }
-}
-```
-
----
-
-## Login
-
-Authenticate an existing user.
-
-### Endpoint
-
-```http
-POST /auth/login
-```
-
-### Request Body
-
-```json
-{
-  "email": "test@example.com",
-  "password": "password123"
-}
-```
-
-### Response
-
-```json
-{
-  "accessToken": "JWT_TOKEN",
-  "user": {
-    "id": "USER_ID",
-    "email": "test@example.com"
-  }
-}
-```
-
----
-
-# Authentication
-
-Protected API routes require a JWT access token.
-
-Include the token in the request header:
-
-```http
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
-Example:
-
-```bash
-curl http://localhost:3000/opportunities \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-```
-
-Requests without a valid JWT token return:
-
-```json
-{
-  "message": "Unauthorized",
-  "statusCode": 401
-}
-```
-
----
-
-# Opportunities API
-
-All opportunity endpoints require authentication.
-
----
-
-## Create Opportunity
-
-Create a new job or internship opportunity.
-
-### Endpoint
-
-```http
-POST /opportunities
-```
-
-### Request Headers
-
-```http
-Content-Type: application/json
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
-### Request Body
-
-```json
-{
-  "url": "https://www.linkedin.com/jobs/view/example",
-  "source": "LINKEDIN",
-  "title": "Software Engineer Intern",
-  "company": "Example Company",
-  "description": "Backend engineering internship opportunity",
-  "status": "SAVED",
-  "metadata": {
-    "location": "Bengaluru",
-    "salary": "₹30,000/month"
-  }
-}
-```
-
-### Example Response
-
-```json
-{
-  "id": "OPPORTUNITY_ID",
-  "userId": "USER_ID",
-  "url": "https://www.linkedin.com/jobs/view/example",
-  "source": "LINKEDIN",
-  "title": "Software Engineer Intern",
-  "company": "Example Company",
-  "description": "Backend engineering internship opportunity",
-  "status": "SAVED",
-  "metadata": {
-    "location": "Bengaluru",
-    "salary": "₹30,000/month"
-  },
-  "createdAt": "2026-01-01T00:00:00.000Z",
-  "updatedAt": "2026-01-01T00:00:00.000Z"
-}
-```
-
----
-
-## Get All Opportunities
-
-Returns all opportunities belonging to the authenticated user.
-
-### Endpoint
-
-```http
-GET /opportunities
-```
-
-### Request Headers
-
-```http
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
-### Example Response
-
-```json
-[
-  {
-    "id": "OPPORTUNITY_ID",
-    "userId": "USER_ID",
-    "url": "https://www.linkedin.com/jobs/view/example",
-    "source": "LINKEDIN",
-    "title": "Software Engineer Intern",
-    "company": "Example Company",
-    "description": "Backend engineering internship opportunity",
-    "status": "SAVED",
-    "metadata": {
-      "location": "Bengaluru"
-    },
-    "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-01-01T00:00:00.000Z"
-  }
-]
-```
-
----
-
-## Get One Opportunity
-
-Returns a specific opportunity belonging to the authenticated user.
-
-### Endpoint
-
-```http
-GET /opportunities/:id
-```
-
-### Example
-
-```http
-GET /opportunities/OPPORTUNITY_ID
-```
-
-### Request Headers
-
-```http
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
-If the opportunity does not exist or does not belong to the authenticated user:
-
-```json
-{
-  "message": "Opportunity not found",
-  "statusCode": 404
-}
-```
-
----
-
-## Update Opportunity
-
-Updates an existing opportunity.
-
-### Endpoint
-
-```http
-PATCH /opportunities/:id
-```
-
-### Request Headers
-
-```http
-Content-Type: application/json
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
-### Example Request
-
-```json
-{
-  "status": "APPLIED"
-}
-```
-
-Other fields can also be updated.
-
----
-
-## Delete Opportunity
-
-Deletes an opportunity.
-
-### Endpoint
-
-```http
-DELETE /opportunities/:id
-```
-
-### Request Headers
-
-```http
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
-The opportunity must belong to the authenticated user.
-
----
-
-# Opportunity Sources
-
-The available opportunity sources are defined in the Prisma schema.
-
-Examples may include:
-
-```text
-LINKEDIN
-```
-
-Additional sources can be added as the application evolves.
-
----
-
-# Opportunity Status
-
-The available statuses are defined in the Prisma schema.
-
-Examples currently include:
-
-```text
-SAVED
-APPLIED
-```
-
-Additional application stages may be added in the future, such as:
-
-```text
-INTERVIEWING
-OFFERED
-REJECTED
-WITHDRAWN
-```
-
----
-
-# Example API Workflow
-
-## 1. Register
-
-```bash
-curl -X POST http://localhost:3000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "password": "password123"
-  }'
-```
-
----
-
-## 2. Login
-
-```bash
-curl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "password": "password123"
-  }'
-```
-
-Copy the returned:
-
-```text
-accessToken
-```
-
----
-
-## 3. Create an Opportunity
-
-```bash
-curl -X POST http://localhost:3000/opportunities \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -d '{
-    "url": "https://www.linkedin.com/jobs/view/example",
-    "source": "LINKEDIN",
-    "title": "Software Engineer Intern",
-    "company": "Example Company",
-    "description": "Backend engineering internship opportunity",
-    "status": "SAVED",
-    "metadata": {
-      "location": "Bengaluru"
-    }
-  }'
-```
-
----
-
-## 4. Get Opportunities
-
-```bash
-curl http://localhost:3000/opportunities \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-```
-
----
-
-## 5. Update an Opportunity
-
-```bash
-curl -X PATCH \
-  http://localhost:3000/opportunities/OPPORTUNITY_ID \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -d '{
-    "status": "APPLIED"
-  }'
-```
-
----
-
-## 6. Delete an Opportunity
-
-```bash
-curl -X DELETE \
-  http://localhost:3000/opportunities/OPPORTUNITY_ID \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
-```
-
----
-
-# Security
-
-ApplyTMRW currently implements several security measures.
-
----
-
-## Password Security
-
-User passwords are hashed using:
-
-```text
-bcrypt
-```
-
-Passwords are never stored in plain text.
-
----
-
-## JWT Authentication
-
-The API uses JSON Web Tokens for authentication.
-
-After successful registration or login, the server returns an access token.
-
-The token must be included in protected API requests.
-
-```http
-Authorization: Bearer YOUR_ACCESS_TOKEN
-```
-
----
-
-## Protected Routes
-
-Opportunity routes are protected using a JWT authentication guard.
-
-Requests without a valid JWT token receive:
-
-```text
-401 Unauthorized
-```
-
----
-
-## User-Level Data Isolation
-
-Each opportunity is associated with a specific user.
-
-Opportunity queries are scoped using the authenticated user's ID.
-
-Conceptually:
-
-```text
-Authenticated User
-        │
-        ▼
-      User ID
-        │
-        ▼
-Filter Opportunities
-        │
-        ▼
-Only User's Data
-```
-
-This prevents one user from accessing another user's opportunities simply by knowing an opportunity ID.
-
----
-
-# Development Commands
-
-## Install Dependencies
-
-```bash
-pnpm install
-```
-
----
-
-## Run Everything
-
-```bash
-pnpm dev
-```
-
----
-
-## Run API Only
+From the project root:
 
 ```bash
 pnpm --filter api dev
@@ -922,7 +605,9 @@ pnpm --filter api dev
 
 ---
 
-## Run Mobile Only
+## Mobile
+
+From the project root:
 
 ```bash
 pnpm --filter mobile dev
@@ -930,384 +615,311 @@ pnpm --filter mobile dev
 
 ---
 
-## Generate Prisma Client
+# Development
+
+The project uses a monorepo architecture.
+
+This allows all applications to share:
+
+- Dependencies
+- TypeScript configuration
+- Development tooling
+- Build tooling
+
+When adding a dependency to a specific application, use pnpm filters.
+
+For example:
 
 ```bash
-pnpm --filter api prisma generate
+pnpm --filter api add <package-name>
+```
+
+For development dependencies:
+
+```bash
+pnpm --filter api add -D <package-name>
 ```
 
 ---
 
-## Run Prisma Migration
+# Authentication
 
-```bash
-pnpm --filter api prisma migrate dev
+The backend currently supports JWT-based authentication.
+
+The authentication flow is:
+
+```text
+User
+  │
+  │ Register / Login
+  ▼
+API
+  │
+  │ Validate credentials
+  ▼
+Generate JWT
+  │
+  ▼
+Return Access Token
+  │
+  ▼
+Client stores token
+  │
+  │ Authorization: Bearer <token>
+  ▼
+Protected API Routes
+```
+
+Passwords are hashed using bcrypt before being stored in the database.
+
+The backend validates JWT tokens using Passport.
+
+Authentication and authorization logic is handled by the API.
+
+Detailed authentication contracts are documented in:
+
+```text
+apps/api/README.md
 ```
 
 ---
 
-## Create a Named Migration
+# Data Ownership
 
-```bash
-pnpm --filter api prisma migrate dev --name migration_name
+ApplyTMRW is designed around user-owned data.
+
+A user should only be able to access their own resources.
+
+For example:
+
+```text
+User A
+│
+├── Opportunity 1
+├── Opportunity 2
+└── Opportunity 3
+
+
+User B
+│
+├── Opportunity 4
+└── Opportunity 5
 ```
+
+User A should not be able to access or modify User B's opportunities.
+
+The backend enforces this through authenticated and user-scoped database queries.
 
 ---
 
-## Open Prisma Studio
+# Current Features
 
-```bash
-pnpm --filter api prisma studio
-```
+The following backend features are currently implemented.
+
+## Authentication
+
+- User registration
+- User login
+- Password hashing
+- Password validation
+- JWT generation
+- JWT authentication
+- Protected routes
+
+---
+
+## Opportunities
+
+- Create an opportunity
+- Retrieve all user opportunities
+- Retrieve a single opportunity
+- Update an opportunity
+- Delete an opportunity
+
+All opportunity resources are scoped to the authenticated user.
+
+---
+
+## Validation
+
+Request validation is implemented using:
+
+- class-validator
+- class-transformer
+
+DTOs are used to validate incoming request data.
 
 ---
 
 # Current Development Status
 
-## Completed
+The project is currently under active development.
 
-### Project Setup
+The backend foundation currently includes:
 
-- [x] Monorepo setup
-- [x] pnpm workspace configuration
-- [x] Expo mobile application
-- [x] NestJS backend API
+```text
+Authentication
+        │
+        ├── Registration
+        ├── Login
+        ├── Password Hashing
+        └── JWT Authentication
 
-### Database
+Opportunity Management
+        │
+        ├── Create
+        ├── Read
+        ├── Update
+        └── Delete
+```
 
-- [x] PostgreSQL setup
-- [x] Prisma ORM integration
-- [x] Prisma schema
-- [x] User database model
-- [x] Opportunity database model
-- [x] Reminder database model
-- [x] Prisma client generation
+The next development stages will focus on connecting the mobile application to the backend and expanding the application's functionality.
 
-### Authentication
+---
+
+# Roadmap
+
+The following features may be implemented in future versions.
+
+## Authentication
 
 - [x] User registration
 - [x] User login
-- [x] Password hashing with bcrypt
-- [x] JWT generation
-- [x] JWT authentication strategy
-- [x] JWT authentication guard
-- [x] Protected API routes
+- [x] Password hashing
+- [x] JWT authentication
+- [ ] Refresh tokens
+- [ ] Logout
+- [ ] Password reset
+- [ ] Email verification
 
-### Opportunities
+---
+
+## Opportunity Management
 
 - [x] Create opportunity
-- [x] Get all user opportunities
-- [x] Get one opportunity
+- [x] Retrieve opportunities
+- [x] Retrieve a single opportunity
 - [x] Update opportunity
 - [x] Delete opportunity
-- [x] User-level opportunity isolation
-- [x] API tested with curl
+- [ ] Advanced filtering
+- [ ] Search
+- [ ] Sorting
+- [ ] Pagination
 
 ---
-
-# In Progress
-
-- [ ] Reminders API
-- [ ] Mobile authentication screens
-- [ ] Secure JWT storage in the mobile application
-- [ ] Mobile API integration
-- [ ] Opportunities mobile UI
-
----
-
-# Planned Features
-
-## Reminders
-
-- [ ] Create reminders
-- [ ] View reminders
-- [ ] Update reminders
-- [ ] Delete reminders
-- [ ] Connect reminders to opportunities
-- [ ] Follow-up reminders
-- [ ] Application deadline reminders
-- [ ] Interview reminders
-
-## Mobile Application
-
-- [ ] Registration screen
-- [ ] Login screen
-- [ ] Authentication state management
-- [ ] Secure token storage
-- [ ] Opportunities list
-- [ ] Opportunity details
-- [ ] Add opportunity screen
-- [ ] Edit opportunity screen
-- [ ] Reminder screens
-
-## Notifications
-
-- [ ] Local notifications
-- [ ] Push notifications
-- [ ] Application deadline notifications
-- [ ] Follow-up notifications
 
 ## Application Tracking
 
-- [ ] Interview tracking
-- [ ] Offer tracking
-- [ ] Rejection tracking
-- [ ] Application notes
 - [ ] Application timeline
+- [ ] Application deadlines
+- [ ] Interview tracking
+- [ ] Rejection tracking
+- [ ] Offer tracking
+
+---
+
+## Notifications
+
+- [ ] Application reminders
+- [ ] Interview reminders
+- [ ] Deadline reminders
+
+---
 
 ## Analytics
 
-- [ ] Total applications
+- [ ] Application statistics
 - [ ] Applications by status
 - [ ] Applications by company
-- [ ] Applications by source
-- [ ] Interview conversion rate
-- [ ] Application statistics
-
-## Search and Filtering
-
-- [ ] Search opportunities
-- [ ] Filter by status
-- [ ] Filter by source
-- [ ] Filter by company
-- [ ] Sort opportunities
-
-## User Management
-
-- [ ] User profile
-- [ ] Update profile
-- [ ] Change password
-- [ ] Account deletion
+- [ ] Application success rate
+- [ ] Job search insights
 
 ---
 
-# Development Roadmap
+## AI Features
+
+Potential AI-powered features may include:
+
+- [ ] Job description analysis
+- [ ] Resume matching
+- [ ] Resume improvement suggestions
+- [ ] Cover letter assistance
+- [ ] Opportunity extraction
+- [ ] Application insights
+
+---
+
+# API Documentation
+
+Detailed API documentation is available in:
 
 ```text
-Project Setup
-      │
-      ▼
-Database + Prisma
-      │
-      ▼
-Authentication
-      │
-      ▼
-Opportunities API
-      │
-      ▼
-Reminders API
-      │
-      ▼
-Mobile Authentication
-      │
-      ▼
-Mobile API Integration
-      │
-      ▼
-Opportunities UI
-      │
-      ▼
-Reminders UI
-      │
-      ▼
-Notifications
-      │
-      ▼
-Analytics
+apps/api/README.md
 ```
+
+The API documentation contains:
+
+- API overview
+- Authentication details
+- Authorization
+- Endpoint contracts
+- Request formats
+- Response formats
+- Opportunity models
+- Error responses
 
 ---
 
-# Environment Files
+# Security
 
-The following environment files should not be committed:
+The project follows several security practices.
 
-```text
-.env
-.env.local
-.env.development
-.env.production
-```
+## Passwords
 
-A template file should be committed:
+Passwords are hashed using bcrypt.
 
-```text
-.env.example
-```
-
-Example:
-
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/applytmrw"
-
-JWT_SECRET="replace-with-a-secure-secret"
-
-JWT_EXPIRES_IN="7d"
-```
+Plain text passwords are never stored.
 
 ---
 
-# Git Workflow
+## Authentication
 
-Before making changes:
+Protected endpoints require a valid JWT.
 
-```bash
-git checkout -b feature/feature-name
-```
-
-After making changes:
-
-```bash
-git status
-```
-
-Add files:
-
-```bash
-git add .
-```
-
-Create a commit:
-
-```bash
-git commit -m "feat: add feature name"
-```
-
-Push the branch:
-
-```bash
-git push origin feature/feature-name
-```
-
-Then open a pull request.
-
----
-
-# Recommended Commit Convention
-
-Use descriptive commit messages.
-
-Examples:
-
-```text
-feat: add user authentication
-feat: add opportunities CRUD API
-feat: add reminders API
-feat: add mobile login screen
-
-fix: resolve JWT authentication issue
-fix: handle opportunity ownership validation
-
-docs: update README
-
-refactor: improve authentication module structure
-
-chore: update dependencies
-```
-
----
-
-# Troubleshooting
-
-## Prisma Client Not Found
-
-Run:
-
-```bash
-pnpm --filter api prisma generate
-```
-
----
-
-## Database Connection Error
-
-Check that PostgreSQL is running.
-
-Also verify:
-
-```env
-DATABASE_URL
-```
-
-in:
-
-```text
-apps/api/.env
-```
-
----
-
-## JWT Authentication Fails
-
-Check that:
-
-```env
-JWT_SECRET
-```
-
-is defined.
-
-Also ensure the same JWT secret is used by the authentication configuration and JWT strategy.
-
----
-
-## Protected Route Returns 401
-
-Make sure the request includes:
+Tokens are sent using:
 
 ```http
-Authorization: Bearer YOUR_ACCESS_TOKEN
+Authorization: Bearer <access_token>
 ```
-
-Also verify that the token has not expired.
 
 ---
 
-## bcrypt Installation Error
+## Environment Variables
 
-Some package managers may block dependency build scripts.
+Secrets should be stored in environment variables.
 
-If pnpm reports an ignored build script for bcrypt, run:
+Examples include:
 
-```bash
-pnpm approve-builds
-```
+- Database credentials
+- JWT secrets
+- API keys
 
-Select:
-
-```text
-bcrypt
-```
-
-Then rebuild:
-
-```bash
-pnpm rebuild bcrypt
-```
-
-You can test bcrypt with:
-
-```bash
-pnpm --filter api exec node \
-  -e "console.log(require('bcrypt').hashSync('test', 10))"
-```
+Environment files should not be committed.
 
 ---
 
 # Contributing
 
-Contributions and improvements are welcome.
+The project is currently under active development.
 
-Before submitting changes:
+When contributing:
 
 1. Create a new branch.
 2. Make your changes.
 3. Test the application.
-4. Ensure the API compiles successfully.
-5. Commit your changes using descriptive commit messages.
-6. Push the branch.
-7. Open a pull request.
+4. Commit your changes.
+5. Push the branch.
+6. Create a pull request.
 
 ---
 
@@ -1315,8 +927,4 @@ Before submitting changes:
 
 This project is currently private.
 
----
-
-# Author
-
-Built as part of the ApplyTMRW project by SHARJIL SIDDIQUI.
+A license may be added in the future.
