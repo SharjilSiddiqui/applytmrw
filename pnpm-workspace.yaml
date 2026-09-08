@@ -3,6 +3,10 @@ packages:
   - "packages/*"
 allowBuilds:
   '@parcel/watcher': true
+  '@prisma/engines': false
+  bcrypt: true
+  esbuild: false
+  prisma: false
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - '@expo/cli@57.0.23'

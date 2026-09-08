@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OpportunityStatus {
+  SAVED
+  INTERESTED
+  APPLIED
+  INTERVIEWING
+  OFFER
+  REJECTED
+  ARCHIVED
+}
+
+enum OpportunitySource {
+  LINKEDIN
+  INSTAGRAM
+  X
+  FACEBOOK
+  WEBSITE
+  OTHER
+}
+
+enum ReminderType {
+  FOLLOW_UP
+  APPLICATION_DEADLINE
+  CUSTOM
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  opportunities Opportunity[]
+}
+
+model Opportunity {
+  id          String            @id @default(uuid())
+  userId      String
+  url         String
+  source      OpportunitySource @default(OTHER)
+
+  title       String?
+  company     String?
+  description String?
+
+  status      OpportunityStatus @default(SAVED)
+
+  metadata    Json?
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminders   Reminder[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Reminder {
+  id            String       @id @default(uuid())
+  opportunityId String
+
+  type          ReminderType
+  scheduledAt   DateTime
+
+  completed     Boolean      @default(false)
+  completedAt   DateTime?
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  opportunity   Opportunity  @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  @@index([opportunityId])
+  @@index([scheduledAt])
+}

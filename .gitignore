@@ -1,0 +1,194 @@
+# ============================================
+# Dependencies
+# ============================================
+
+node_modules/
+.pnpm-store/
+
+
+# ============================================
+# Environment variables
+# ============================================
+
+.env
+.env.*
+!.env.example
+
+
+# ============================================
+# Build output
+# ============================================
+
+dist/
+build/
+out/
+
+.next/
+.nuxt/
+
+coverage/
+
+
+# ============================================
+# NestJS
+# ============================================
+
+apps/api/dist/
+
+
+# ============================================
+# Expo / React Native
+# ============================================
+
+.expo/
+.expo-shared/
+
+web-build/
+
+*.jks
+*.keystore
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+ios/
+android/
+
+# Uncomment these if you generate native projects
+# but don't want to commit them.
+
+
+# ============================================
+# Prisma
+# ============================================
+
+# Local Prisma database files
+*.db
+*.db-journal
+
+# Prisma generated files are usually regenerated
+# Uncomment if your generated client is not meant
+# to be committed.
+# apps/api/src/generated/prisma/
+
+
+# ============================================
+# Logs
+# ============================================
+
+logs/
+*.log
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+lerna-debug.log*
+
+
+# ============================================
+# Runtime files
+# ============================================
+
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+
+# ============================================
+# OS files
+# ============================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+
+# ============================================
+# IDE / Editor
+# ============================================
+
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+.idea/
+*.iml
+
+*.swp
+*.swo
+*~
+
+
+# ============================================
+# TypeScript
+# ============================================
+
+*.tsbuildinfo
+
+
+# ============================================
+# Turbo
+# ============================================
+
+.turbo/
+
+
+# ============================================
+# Testing
+# ============================================
+
+coverage/
+.nyc_output/
+
+
+# ============================================
+# Temporary files
+# ============================================
+
+tmp/
+temp/
+
+.cache/
+.parcel-cache/
+
+
+# ============================================
+# Debug files
+# ============================================
+
+*.debug
+
+
+# ============================================
+# Secrets / credentials
+# ============================================
+
+*.pem
+
+service-account.json
+serviceAccountKey.json
+credentials.json
+
+
+# ============================================
+# Firebase
+# ============================================
+
+firebase-debug.log
+
+
+# ============================================
+# EAS / Expo credentials
+# ============================================
+
+.eas/
