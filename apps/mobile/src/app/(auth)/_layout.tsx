@@ -1,9 +1,9 @@
 import { ActivityIndicator, View } from "react-native";
-import { Redirect } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 
 import { useAuth } from "@/contexts/auth-context";
 
-export default function IndexScreen() {
+export default function AuthLayout() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
@@ -18,5 +18,10 @@ export default function IndexScreen() {
     return <Redirect href="/(tabs)" />;
   }
 
-  return <Redirect href="/(auth)/login" />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="login" />
+      <Stack.Screen name="register" />
+    </Stack>
+  );
 }
