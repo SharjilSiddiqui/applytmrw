@@ -20,14 +20,23 @@ import type {
   OpportunityStatus,
 } from "@/types/opportunity";
 
-const SOURCES: OpportunitySource[] = ["LINKEDIN", "INDEED", "NAUKRI", "OTHER"];
+const SOURCES: OpportunitySource[] = [
+  "LINKEDIN",
+  "INSTAGRAM",
+  "X",
+  "FACEBOOK",
+  "WEBSITE",
+  "OTHER",
+];
 
 const STATUSES: OpportunityStatus[] = [
   "SAVED",
+  "INTERESTED",
   "APPLIED",
-  "INTERVIEW",
+  "INTERVIEWING",
   "OFFER",
   "REJECTED",
+  "ARCHIVED",
 ];
 
 function formatLabel(value: string) {
@@ -63,8 +72,8 @@ export default function EditOpportunityScreen() {
 
       setOpportunity(data);
 
-      setTitle(data.title);
-      setCompany(data.company);
+      setTitle(data.title ?? "");
+      setCompany(data.company ?? "");
       setUrl(data.url);
       setDescription(data.description ?? "");
       setSource(data.source);

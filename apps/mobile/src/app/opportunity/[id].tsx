@@ -16,18 +16,22 @@ import type { Opportunity, OpportunityStatus } from "@/types/opportunity";
 
 const STATUS_LABELS: Record<OpportunityStatus, string> = {
   SAVED: "Saved",
+  INTERESTED: "Interested",
   APPLIED: "Applied",
-  INTERVIEW: "Interview",
+  INTERVIEWING: "Interviewing",
   OFFER: "Offer",
   REJECTED: "Rejected",
+  ARCHIVED: "Archived",
 };
 
 const STATUS_STYLES: Record<OpportunityStatus, string> = {
   SAVED: "bg-blue-100 text-blue-700",
+  INTERESTED: "bg-cyan-100 text-cyan-700",
   APPLIED: "bg-purple-100 text-purple-700",
-  INTERVIEW: "bg-yellow-100 text-yellow-700",
+  INTERVIEWING: "bg-yellow-100 text-yellow-700",
   OFFER: "bg-green-100 text-green-700",
   REJECTED: "bg-red-100 text-red-700",
+  ARCHIVED: "bg-slate-200 text-slate-600",
 };
 
 export default function OpportunityDetailsScreen() {
@@ -171,11 +175,11 @@ export default function OpportunityDetailsScreen() {
       <View className="flex-row items-start justify-between">
         <View className="flex-1 pr-4">
           <Text className="text-3xl font-bold text-slate-900">
-            {opportunity.title}
+            {opportunity.title ?? "Untitled opportunity"}
           </Text>
 
           <Text className="mt-2 text-xl text-slate-600">
-            {opportunity.company}
+            {opportunity.company ?? "Company not identified yet"}
           </Text>
         </View>
 

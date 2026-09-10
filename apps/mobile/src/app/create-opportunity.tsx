@@ -13,14 +13,23 @@ import { router } from "expo-router";
 import { createOpportunity } from "@/lib/opportunities";
 import type { OpportunitySource, OpportunityStatus } from "@/types/opportunity";
 
-const SOURCES: OpportunitySource[] = ["LINKEDIN", "INDEED", "NAUKRI", "OTHER"];
+const SOURCES: OpportunitySource[] = [
+  "LINKEDIN",
+  "INSTAGRAM",
+  "X",
+  "FACEBOOK",
+  "WEBSITE",
+  "OTHER",
+];
 
 const STATUSES: OpportunityStatus[] = [
   "SAVED",
+  "INTERESTED",
   "APPLIED",
-  "INTERVIEW",
+  "INTERVIEWING",
   "OFFER",
   "REJECTED",
+  "ARCHIVED",
 ];
 
 function formatLabel(value: string) {

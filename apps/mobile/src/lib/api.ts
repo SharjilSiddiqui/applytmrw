@@ -1,6 +1,6 @@
 import { getAccessToken } from "./auth-storage";
 
-const API_URL = "http://192.168.0.103:3000";
+const API_URL = "http://192.168.0.100:3000";
 
 interface RequestOptions extends RequestInit {
   authenticated?: boolean;

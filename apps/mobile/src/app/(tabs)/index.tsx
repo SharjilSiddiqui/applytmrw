@@ -149,11 +149,11 @@ export default function HomeScreen() {
                   numberOfLines={2}
                   className="text-lg font-bold text-slate-900"
                 >
-                  {item.title}
+                  {item.title ?? "Untitled opportunity"}
                 </Text>
 
                 <Text className="mt-1 text-base text-slate-600">
-                  {item.company}
+                  {item.company ?? "Company not identified yet"}
                 </Text>
               </View>
 

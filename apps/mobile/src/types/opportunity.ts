@@ -1,11 +1,19 @@
-export type OpportunitySource = "LINKEDIN" | "INDEED" | "NAUKRI" | "OTHER";
+export type OpportunitySource =
+  | "LINKEDIN"
+  | "INSTAGRAM"
+  | "X"
+  | "FACEBOOK"
+  | "WEBSITE"
+  | "OTHER";
 
 export type OpportunityStatus =
   | "SAVED"
+  | "INTERESTED"
   | "APPLIED"
-  | "INTERVIEW"
+  | "INTERVIEWING"
   | "OFFER"
-  | "REJECTED";
+  | "REJECTED"
+  | "ARCHIVED";
 
 export interface Opportunity {
   id: string;
@@ -14,8 +22,8 @@ export interface Opportunity {
   url: string;
   source: OpportunitySource;
 
-  title: string;
-  company: string;
+  title: string | null;
+  company: string | null;
 
   description: string | null;
   status: OpportunityStatus;
@@ -28,10 +36,11 @@ export interface Opportunity {
 
 export interface CreateOpportunityRequest {
   url: string;
-  source: OpportunitySource;
 
-  title: string;
-  company: string;
+  source?: OpportunitySource;
+
+  title?: string;
+  company?: string;
 
   description?: string;
   status?: OpportunityStatus;
