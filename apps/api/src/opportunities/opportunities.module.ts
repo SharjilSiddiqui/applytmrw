@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthModule } from '../auth/auth.module';
 import { OpportunitiesController } from './opportunities.controller';
 import { OpportunitiesService } from './opportunities.service';
+import { OpportunityMetadataService } from './services/opportunity-metadata.service';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { OpportunitiesService } from './opportunities.service';
     }),
   ],
   controllers: [OpportunitiesController],
-  providers: [OpportunitiesService],
+  providers: [OpportunitiesService, OpportunityMetadataService],
 })
 export class OpportunitiesModule {}

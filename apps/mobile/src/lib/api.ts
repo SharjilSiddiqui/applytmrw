@@ -1,6 +1,25 @@
+import Constants from "expo-constants";
+
 import { getAccessToken } from "./auth-storage";
 
-const API_URL = "http://192.168.0.100:3000";
+function getApiUrl(): string {
+  // Get the Expo/Metro host, e.g.:
+  // 192.168.0.102:8081
+  const hostUri =
+    Constants.expoConfig?.hostUri ?? Constants.expoGoConfig?.debuggerHost;
+
+  if (!hostUri) {
+    throw new Error("Unable to determine development host.");
+  }
+
+  const host = hostUri.split(":")[0];
+
+  return `http://${host}:3000`;
+}
+
+const API_URL = getApiUrl();
+
+console.log("API URL:", API_URL);
 
 interface RequestOptions extends RequestInit {
   authenticated?: boolean;

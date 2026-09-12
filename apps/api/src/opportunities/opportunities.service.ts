@@ -5,17 +5,34 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { UpdateOpportunityDto } from './dto/update-opportunity.dto';
 
+import { OpportunityMetadataService } from './services/opportunity-metadata.service';
+
 @Injectable()
 export class OpportunitiesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly opportunityMetadataService: OpportunityMetadataService,
+  ) {}
 
   async create(userId: string, dto: CreateOpportunityDto) {
+    const extractedMetadata = await this.opportunityMetadataService.extract(
+      dto.url,
+    );
+
     const { metadata, ...data } = dto;
 
     return this.prisma.opportunity.create({
       data: {
         ...data,
+
+        title: data.title ?? extractedMetadata.title,
+
+        company: data.company ?? extractedMetadata.company,
+
+        description: data.description ?? extractedMetadata.description,
+
         userId,
+
         ...(metadata !== undefined && {
           metadata: metadata as Prisma.InputJsonValue,
         }),
