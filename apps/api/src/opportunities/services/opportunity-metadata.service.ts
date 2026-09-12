@@ -1080,3 +1080,4 @@ export class OpportunityMetadataService {
     return Boolean(metadata.title || metadata.company || metadata.description);
   }
 }
+//
