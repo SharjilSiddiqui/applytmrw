@@ -1,18 +1,29 @@
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { useFocusEffect, useLocalSearchParams, router } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Linking,
+  Platform,
   Pressable,
   ScrollView,
   Text,
   View,
 } from "react-native";
-import { useFocusEffect, useLocalSearchParams, router } from "expo-router";
-import { useCallback, useState } from "react";
 
+import {
+  completeReminder,
+  createReminder,
+  deleteReminder,
+  getReminders,
+} from "@/lib/reminders";
 import { deleteOpportunity, getOpportunity } from "@/lib/opportunities";
 
 import type { Opportunity, OpportunityStatus } from "@/types/opportunity";
+import type { Reminder, ReminderType } from "@/types/reminder";
 
 const STATUS_LABELS: Record<OpportunityStatus, string> = {
   SAVED: "Saved",
@@ -34,13 +45,37 @@ const STATUS_STYLES: Record<OpportunityStatus, string> = {
   ARCHIVED: "bg-slate-200 text-slate-600",
 };
 
+const REMINDER_LABELS: Record<ReminderType, string> = {
+  FOLLOW_UP: "Follow up",
+  APPLICATION_DEADLINE: "Application deadline",
+  CUSTOM: "Custom",
+};
+
+const REMINDER_TYPES: ReminderType[] = [
+  "FOLLOW_UP",
+  "APPLICATION_DEADLINE",
+  "CUSTOM",
+];
+
 export default function OpportunityDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingReminders, setIsLoadingReminders] = useState(false);
+
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCreatingReminder, setIsCreatingReminder] = useState(false);
+
+  const [selectedReminderType, setSelectedReminderType] =
+    useState<ReminderType>("FOLLOW_UP");
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const loadOpportunity = useCallback(async () => {
     if (!id) {
@@ -65,10 +100,29 @@ export default function OpportunityDetailsScreen() {
     }
   }, [id]);
 
+  const loadReminders = useCallback(async () => {
+    if (!id) {
+      return;
+    }
+
+    try {
+      setIsLoadingReminders(true);
+
+      const data = await getReminders(id);
+
+      setReminders(data);
+    } catch (error) {
+      console.error("Failed to load reminders:", error);
+    } finally {
+      setIsLoadingReminders(false);
+    }
+  }, [id]);
+
   useFocusEffect(
     useCallback(() => {
       void loadOpportunity();
-    }, [loadOpportunity]),
+      void loadReminders();
+    }, [loadOpportunity, loadReminders]),
   );
 
   const handleOpenUrl = async () => {
@@ -127,6 +181,130 @@ export default function OpportunityDetailsScreen() {
               );
             } finally {
               setIsDeleting(false);
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleDateChange = (event: DateTimePickerEvent, date?: Date) => {
+    setShowDatePicker(false);
+
+    if (event.type !== "set" || !date) {
+      return;
+    }
+
+    const nextDate = new Date(selectedDate);
+
+    nextDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+
+    setSelectedDate(nextDate);
+
+    if (Platform.OS === "android") {
+      setShowTimePicker(true);
+    }
+  };
+
+  const handleTimeChange = (event: DateTimePickerEvent, date?: Date) => {
+    setShowTimePicker(false);
+
+    if (event.type !== "set" || !date) {
+      return;
+    }
+
+    const nextDate = new Date(selectedDate);
+
+    nextDate.setHours(date.getHours(), date.getMinutes());
+
+    setSelectedDate(nextDate);
+  };
+
+  const handleCreateReminder = async () => {
+    if (!id) {
+      return;
+    }
+
+    try {
+      setIsCreatingReminder(true);
+
+      const reminder = await createReminder(id, {
+        type: selectedReminderType,
+        scheduledAt: selectedDate.toISOString(),
+      });
+
+      setReminders((currentReminders) => [...currentReminders, reminder]);
+    } catch (error) {
+      console.error("Failed to create reminder:", error);
+
+      Alert.alert(
+        "Error",
+        error instanceof Error ? error.message : "Failed to create reminder.",
+      );
+    } finally {
+      setIsCreatingReminder(false);
+    }
+  };
+
+  const handleCompleteReminder = async (reminder: Reminder) => {
+    if (!id || reminder.completed) {
+      return;
+    }
+
+    try {
+      const updatedReminder = await completeReminder(id, reminder.id);
+
+      setReminders((currentReminders) =>
+        currentReminders.map((currentReminder) =>
+          currentReminder.id === updatedReminder.id
+            ? updatedReminder
+            : currentReminder,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to complete reminder:", error);
+
+      Alert.alert(
+        "Error",
+        error instanceof Error ? error.message : "Failed to complete reminder.",
+      );
+    }
+  };
+
+  const handleDeleteReminder = (reminder: Reminder) => {
+    if (!id) {
+      return;
+    }
+
+    Alert.alert(
+      "Delete reminder?",
+      "Are you sure you want to delete this reminder?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteReminder(id, reminder.id);
+
+              setReminders((currentReminders) =>
+                currentReminders.filter(
+                  (currentReminder) => currentReminder.id !== reminder.id,
+                ),
+              );
+            } catch (error) {
+              console.error("Failed to delete reminder:", error);
+
+              Alert.alert(
+                "Error",
+                error instanceof Error
+                  ? error.message
+                  : "Failed to delete reminder.",
+              );
             }
           },
         },
@@ -233,6 +411,152 @@ export default function OpportunityDetailsScreen() {
           </Text>
         </View>
       ) : null}
+
+      {/* Reminders */}
+
+      <View className="mt-10">
+        <Text className="text-sm font-medium uppercase tracking-wide text-slate-400">
+          Reminders
+        </Text>
+
+        {isLoadingReminders ? (
+          <View className="mt-4">
+            <ActivityIndicator />
+          </View>
+        ) : reminders.length === 0 ? (
+          <Text className="mt-3 text-base text-slate-500">
+            No reminders yet.
+          </Text>
+        ) : (
+          <View className="mt-4 gap-3">
+            {reminders.map((reminder) => (
+              <View
+                key={reminder.id}
+                className={`rounded-xl border p-4 ${
+                  reminder.completed
+                    ? "border-slate-200 bg-slate-50"
+                    : "border-blue-200 bg-blue-50"
+                }`}
+              >
+                <View className="flex-row items-start justify-between">
+                  <View className="flex-1 pr-3">
+                    <Text
+                      className={`text-base font-semibold ${
+                        reminder.completed ? "text-slate-500" : "text-slate-900"
+                      }`}
+                    >
+                      {reminder.completed ? "✓ " : ""}
+                      {REMINDER_LABELS[reminder.type]}
+                    </Text>
+
+                    <Text className="mt-1 text-sm text-slate-600">
+                      {new Date(reminder.scheduledAt).toLocaleString()}
+                    </Text>
+
+                    {reminder.completed ? (
+                      <Text className="mt-1 text-sm text-green-600">
+                        Completed
+                      </Text>
+                    ) : null}
+                  </View>
+
+                  <Pressable onPress={() => handleDeleteReminder(reminder)}>
+                    <Text className="font-semibold text-red-600">Delete</Text>
+                  </Pressable>
+                </View>
+
+                {!reminder.completed ? (
+                  <Pressable
+                    onPress={() => void handleCompleteReminder(reminder)}
+                    className="mt-4 items-center rounded-lg bg-green-600 py-2"
+                  >
+                    <Text className="font-semibold text-white">
+                      Mark complete
+                    </Text>
+                  </Pressable>
+                ) : null}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Add reminder */}
+
+        <View className="mt-6 rounded-xl border border-slate-200 p-4">
+          <Text className="text-base font-semibold text-slate-900">
+            Add reminder
+          </Text>
+
+          <Text className="mt-4 text-sm font-medium text-slate-600">Type</Text>
+
+          <View className="mt-2 flex-row flex-wrap gap-2">
+            {REMINDER_TYPES.map((type) => {
+              const isSelected = selectedReminderType === type;
+
+              return (
+                <Pressable
+                  key={type}
+                  onPress={() => setSelectedReminderType(type)}
+                  className={`rounded-full px-3 py-2 ${
+                    isSelected ? "bg-blue-600" : "bg-slate-100"
+                  }`}
+                >
+                  <Text
+                    className={`text-sm font-semibold ${
+                      isSelected ? "text-white" : "text-slate-700"
+                    }`}
+                  >
+                    {REMINDER_LABELS[type]}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <Text className="mt-5 text-sm font-medium text-slate-600">
+            Scheduled for
+          </Text>
+
+          <Pressable
+            onPress={() => setShowDatePicker(true)}
+            className="mt-2 rounded-lg border border-slate-300 px-4 py-3"
+          >
+            <Text className="text-base text-slate-800">
+              {selectedDate.toLocaleString()}
+            </Text>
+          </Pressable>
+
+          {showDatePicker ? (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={handleDateChange}
+            />
+          ) : null}
+
+          {showTimePicker ? (
+            <DateTimePicker
+              value={selectedDate}
+              mode="time"
+              display="default"
+              onChange={handleTimeChange}
+            />
+          ) : null}
+
+          <Pressable
+            onPress={() => void handleCreateReminder()}
+            disabled={isCreatingReminder}
+            className={`mt-5 items-center rounded-xl py-3 ${
+              isCreatingReminder ? "bg-blue-300" : "bg-blue-600"
+            }`}
+          >
+            <Text className="font-semibold text-white">
+              {isCreatingReminder ? "Creating..." : "Add reminder"}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
 
       {/* Dates */}
 

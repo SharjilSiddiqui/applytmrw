@@ -35,22 +35,18 @@
         }
       ],
       "expo-secure-store",
+      "expo-notifications",
       [
         "expo-sharing",
         {
           "android": {
             "enabled": true,
-            "singleShareMimeTypes": [
-              "text/plain"
-            ],
+            "singleShareMimeTypes": ["text/plain"],
             "multipleShareMimeTypes": []
           }
         }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    }
+      ],
+      "@react-native-community/datetimepicker"
+    ]
   }
 }
