@@ -92,7 +92,7 @@ export default function LoginScreen() {
         <Pressable
           onPress={handleLogin}
           disabled={isSubmitting}
-          className="mt-2 items-center rounded-xl bg-blue-600 py-4 active:bg-blue-700"
+          className="mt-2 items-center rounded-xl bg-brand-500 py-4"
         >
           {isSubmitting ? (
             <ActivityIndicator color="white" />
@@ -107,7 +107,7 @@ export default function LoginScreen() {
 
         <Link href="/register" asChild>
           <Pressable>
-            <Text className="font-semibold text-blue-600">Create one</Text>
+            <Text className="font-semibold text-brand-600">Create one</Text>
           </Pressable>
         </Link>
       </View>

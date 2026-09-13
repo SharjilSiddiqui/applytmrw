@@ -41,12 +41,20 @@
         {
           "android": {
             "enabled": true,
-            "singleShareMimeTypes": ["text/plain"],
+            "singleShareMimeTypes": [
+              "text/plain"
+            ],
             "multipleShareMimeTypes": []
           }
         }
       ],
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f2988dcb-d4f8-49f3-b9e4-00545cccd5a4"
+      }
+    }
   }
 }

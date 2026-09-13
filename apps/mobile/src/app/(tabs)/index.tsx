@@ -61,7 +61,7 @@ export default function HomeScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <View className="flex-1 items-center justify-center bg-surface">
         <ActivityIndicator size="large" />
 
         <Text className="mt-4 text-base text-slate-500">
@@ -72,7 +72,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-surface">
       <FlatList
         data={opportunities}
         keyExtractor={(item) => item.id}
@@ -114,7 +114,7 @@ export default function HomeScreen() {
 
                 <Pressable
                   onPress={() => router.push("/create-opportunity")}
-                  className="rounded-xl bg-blue-600 px-4 py-3"
+                  className="rounded-xl bg-brand-500 px-4 py-3"
                 >
                   <Text className="font-semibold text-white">+ Add</Text>
                 </Pressable>
@@ -141,7 +141,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <Pressable
             onPress={() => router.push(`/opportunity/${item.id}`)}
-            className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 p-5"
+            className="mb-4 rounded-2xl border border-slate-200 bg-white p-5"
           >
             <View className="flex-row items-start justify-between">
               <View className="flex-1 pr-4">
@@ -157,8 +157,8 @@ export default function HomeScreen() {
                 </Text>
               </View>
 
-              <View className="rounded-full bg-blue-100 px-3 py-1">
-                <Text className="text-xs font-semibold text-blue-700">
+              <View className="rounded-full bg-brand-100 px-3 py-1">
+                <Text className="text-xs font-semibold text-brand-700">
                   {item.status}
                 </Text>
               </View>
