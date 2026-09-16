@@ -59,6 +59,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Restoring the persisted auth session is an intentional effect.
+    // State is updated after the asynchronous storage operation completes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void restoreSession();
   }, [restoreSession]);
 

@@ -103,7 +103,7 @@ export default function LoginScreen() {
       </View>
 
       <View className="mt-8 flex-row justify-center">
-        <Text className="text-slate-500">Don't have an account? </Text>
+        <Text className="text-slate-500">Don&#39;t have an account? </Text>
 
         <Link href="/register" asChild>
           <Pressable>

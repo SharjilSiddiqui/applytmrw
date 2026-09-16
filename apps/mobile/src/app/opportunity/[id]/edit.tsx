@@ -91,6 +91,9 @@ export default function EditOpportunityScreen() {
   }, [id]);
 
   useEffect(() => {
+    // Loading remote opportunity data is an intentional effect.
+    // The loader updates local state after the API request completes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadOpportunity();
   }, [loadOpportunity]);
 

@@ -59,32 +59,34 @@ export default function HandleShareScreen() {
     }
 
     if (!isAuthenticated) {
-      setMessage("Please log in to save opportunities.");
+      const timer = setTimeout(() => {
+        setMessage("Please log in to save opportunities.");
+      }, 0);
 
-      return;
+      return () => clearTimeout(timer);
     }
 
     const payload = sharedPayloads.find(
-      (item) =>
-        item.shareType === "url" ||
-        item.shareType === "text",
+      (item) => item.shareType === "url" || item.shareType === "text",
     );
 
     if (!payload?.value) {
-      setMessage("No valid link was shared.");
+      const timer = setTimeout(() => {
+        setMessage("No valid link was shared.");
+      }, 0);
 
-      return;
+      return () => clearTimeout(timer);
     }
 
     const url =
-      payload.shareType === "url"
-        ? payload.value
-        : extractUrl(payload.value);
+      payload.shareType === "url" ? payload.value : extractUrl(payload.value);
 
     if (!url) {
-      setMessage("No valid link was found.");
+      const timer = setTimeout(() => {
+        setMessage("No valid link was found.");
+      }, 0);
 
-      return;
+      return () => clearTimeout(timer);
     }
 
     hasProcessed.current = true;
@@ -117,12 +119,7 @@ export default function HandleShareScreen() {
     };
 
     void saveOpportunity();
-  }, [
-    clearSharedPayloads,
-    isAuthenticated,
-    isAuthLoading,
-    sharedPayloads,
-  ]);
+  }, [clearSharedPayloads, isAuthenticated, isAuthLoading, sharedPayloads]);
 
   return (
     <View className="flex-1 items-center justify-center bg-white px-6">

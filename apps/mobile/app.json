@@ -1,24 +1,24 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "ApplyTMRW",
     "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "scheme": "applytmrw",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FF7A1A",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.mobile"
+      "package": "com.sharjilsiddiqui.applytmrw"
     },
     "web": {
       "output": "static",
@@ -29,9 +29,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#FF7A1A",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 110
         }
       ],
       "expo-secure-store",
@@ -41,9 +41,7 @@
         {
           "android": {
             "enabled": true,
-            "singleShareMimeTypes": [
-              "text/plain"
-            ],
+            "singleShareMimeTypes": ["text/plain"],
             "multipleShareMimeTypes": []
           }
         }

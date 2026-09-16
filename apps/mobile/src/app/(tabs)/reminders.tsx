@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -58,21 +58,31 @@ export default function RemindersScreen() {
   const [isSaving, setIsSaving] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  const loadSettings = useCallback(async () => {
-    try {
-      const savedSettings = await getReminderSettings();
-
-      setSettings(savedSettings);
-    } catch (error) {
-      console.error("Failed to load reminder settings:", error);
-
-      Alert.alert("Unable to load reminders", "Please try again.");
-    }
-  }, []);
-
   useEffect(() => {
+    let cancelled = false;
+
+    const loadSettings = async () => {
+      try {
+        const savedSettings = await getReminderSettings();
+
+        if (!cancelled) {
+          setSettings(savedSettings);
+        }
+      } catch (error) {
+        console.error("Failed to load reminder settings:", error);
+
+        if (!cancelled) {
+          Alert.alert("Unable to load reminders", "Please try again.");
+        }
+      }
+    };
+
     void loadSettings();
-  }, [loadSettings]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleToggleEnabled = (enabled: boolean) => {
     if (!settings) {
@@ -184,6 +194,11 @@ export default function RemindersScreen() {
           <Switch
             value={settings.enabled}
             onValueChange={handleToggleEnabled}
+            trackColor={{
+              false: "#E5E7EB",
+              true: "#FFD9C2",
+            }}
+            thumbColor={settings.enabled ? "#FF7A1A" : "#FFFFFF"}
           />
         </View>
       </View>
@@ -204,7 +219,7 @@ export default function RemindersScreen() {
                   onPress={() => handleFrequencyChange(option.value)}
                   className={`rounded-2xl border p-5 ${
                     isSelected
-                      ? "border-blue-600 bg-blue-50"
+                      ? "border-brand-500 bg-brand-50"
                       : "border-slate-200 bg-white"
                   }`}
                 >
@@ -212,7 +227,7 @@ export default function RemindersScreen() {
                     <View className="flex-1 pr-4">
                       <Text
                         className={`text-base font-semibold ${
-                          isSelected ? "text-blue-700" : "text-slate-900"
+                          isSelected ? "text-brand-600" : "text-slate-900"
                         }`}
                       >
                         {option.title}
@@ -225,11 +240,11 @@ export default function RemindersScreen() {
 
                     <View
                       className={`h-5 w-5 rounded-full border-2 ${
-                        isSelected ? "border-blue-600" : "border-slate-300"
+                        isSelected ? "border-brand-500" : "border-slate-300"
                       }`}
                     >
                       {isSelected && (
-                        <View className="m-1 h-2.5 w-2.5 rounded-full bg-blue-600" />
+                        <View className="m-1 h-2.5 w-2.5 rounded-full bg-brand-500" />
                       )}
                     </View>
                   </View>
@@ -273,7 +288,7 @@ export default function RemindersScreen() {
         onPress={() => void handleSave()}
         disabled={isSaving}
         className={`mt-12 items-center rounded-xl py-4 ${
-          isSaving ? "bg-blue-300" : "bg-blue-600"
+          isSaving ? "bg-brand-300" : "bg-brand-500"
         }`}
       >
         {isSaving ? (

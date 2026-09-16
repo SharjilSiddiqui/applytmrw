@@ -5,16 +5,15 @@ import { Colors } from "@/constants/theme";
 
 export default function AppTabs() {
   const scheme = useColorScheme();
-
   const colors = Colors[scheme === "dark" ? "dark" : "light"];
 
   return (
     <NativeTabs
       backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
+      indicatorColor={colors.primaryLight}
       labelStyle={{
         selected: {
-          color: colors.text,
+          color: colors.primary,
         },
       }}
     >
@@ -38,6 +37,8 @@ export default function AppTabs() {
 
       <NativeTabs.Trigger name="reminders">
         <NativeTabs.Trigger.Label>Reminders</NativeTabs.Trigger.Label>
+
+        <NativeTabs.Trigger.Icon sf="bell" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

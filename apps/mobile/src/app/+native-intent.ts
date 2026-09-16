@@ -1,5 +1,3 @@
-import { getSharedPayloads } from "expo-sharing";
-
 export async function redirectSystemPath({
   path,
 }: {
