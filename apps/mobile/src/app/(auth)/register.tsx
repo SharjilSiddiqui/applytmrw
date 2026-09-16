@@ -2,6 +2,8 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   Text,
   TextInput,
@@ -57,72 +59,107 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View className="flex-1 justify-center bg-white px-6">
-      <View className="mb-10">
-        <Text className="text-4xl font-bold text-slate-900">
-          Create account
-        </Text>
+    <KeyboardAvoidingView
+      className="flex-1 bg-surface"
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View className="flex-1 justify-center px-6">
+        <View className="w-full max-w-xl self-center">
+          {/* Brand */}
+          <View className="mb-10">
+            <View className="h-14 w-14 items-center justify-center rounded-2xl bg-brand-500">
+              <Text className="text-2xl font-extrabold text-white">A</Text>
+            </View>
 
-        <Text className="mt-3 text-base text-slate-500">
-          Start tracking your job opportunities with ApplyTMRW.
-        </Text>
-      </View>
-
-      <View className="gap-5">
-        <View>
-          <Text className="mb-2 text-sm font-medium text-slate-700">Email</Text>
-
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="you@example.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={!isSubmitting}
-            className="rounded-xl border border-slate-300 px-4 py-4 text-base text-slate-900"
-          />
-        </View>
-
-        <View>
-          <Text className="mb-2 text-sm font-medium text-slate-700">
-            Password
-          </Text>
-
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="At least 8 characters"
-            secureTextEntry
-            editable={!isSubmitting}
-            className="rounded-xl border border-slate-300 px-4 py-4 text-base text-slate-900"
-          />
-        </View>
-
-        <Pressable
-          onPress={handleRegister}
-          disabled={isSubmitting}
-          className="mt-2 items-center rounded-xl bg-blue-600 py-4 active:bg-blue-700"
-        >
-          {isSubmitting ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text className="text-base font-semibold text-white">
-              Create account
+            <Text className="mt-7 text-sm font-bold uppercase tracking-widest text-brand-600">
+              ApplyTMRW
             </Text>
-          )}
-        </Pressable>
-      </View>
 
-      <View className="mt-8 flex-row justify-center">
-        <Text className="text-slate-500">Already have an account? </Text>
+            <Text className="mt-2 text-4xl font-bold tracking-tight text-slate-950">
+              Start applying smarter.
+            </Text>
 
-        <Link href="/login" asChild>
-          <Pressable>
-            <Text className="font-semibold text-blue-600">Log in</Text>
-          </Pressable>
-        </Link>
+            <Text className="mt-3 max-w-md text-base leading-6 text-slate-500">
+              Save the opportunities you find today and stay ready to apply
+              tomorrow.
+            </Text>
+          </View>
+
+          {/* Form */}
+          <View className="rounded-3xl border border-slate-100 bg-white p-5">
+            <View className="gap-5">
+              <View>
+                <Text className="mb-2.5 text-sm font-semibold text-slate-800">
+                  Email
+                </Text>
+
+                <TextInput
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="you@example.com"
+                  placeholderTextColor="#94A3B8"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  editable={!isSubmitting}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-950"
+                />
+              </View>
+
+              <View>
+                <Text className="mb-2.5 text-sm font-semibold text-slate-800">
+                  Password
+                </Text>
+
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="At least 8 characters"
+                  placeholderTextColor="#94A3B8"
+                  secureTextEntry
+                  editable={!isSubmitting}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-950"
+                />
+
+                <Text className="mt-2 text-xs text-slate-400">
+                  Use at least 8 characters for your password.
+                </Text>
+              </View>
+
+              <Pressable
+                onPress={handleRegister}
+                disabled={isSubmitting}
+                className={`mt-1 items-center rounded-2xl py-4 ${
+                  isSubmitting
+                    ? "bg-brand-300"
+                    : "bg-brand-500 active:bg-brand-600"
+                }`}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text className="text-base font-bold text-white">
+                    Create account
+                  </Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Login */}
+          <View className="mt-7 flex-row justify-center">
+            <Text className="text-sm text-slate-500">
+              Already have an account?{" "}
+            </Text>
+
+            <Link href="/login" asChild>
+              <Pressable>
+                <Text className="text-sm font-bold text-brand-600">Log in</Text>
+              </Pressable>
+            </Link>
+          </View>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

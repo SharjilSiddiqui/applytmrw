@@ -35,14 +35,24 @@ const STATUS_LABELS: Record<OpportunityStatus, string> = {
   ARCHIVED: "Archived",
 };
 
-const STATUS_STYLES: Record<OpportunityStatus, string> = {
-  SAVED: "bg-blue-100 text-blue-700",
-  INTERESTED: "bg-cyan-100 text-cyan-700",
-  APPLIED: "bg-purple-100 text-purple-700",
-  INTERVIEWING: "bg-yellow-100 text-yellow-700",
-  OFFER: "bg-green-100 text-green-700",
-  REJECTED: "bg-red-100 text-red-700",
-  ARCHIVED: "bg-slate-200 text-slate-600",
+const STATUS_TEXT_STYLES: Record<OpportunityStatus, string> = {
+  SAVED: "text-brand-700",
+  INTERESTED: "text-cyan-700",
+  APPLIED: "text-purple-700",
+  INTERVIEWING: "text-amber-700",
+  OFFER: "text-green-700",
+  REJECTED: "text-red-700",
+  ARCHIVED: "text-slate-600",
+};
+
+const STATUS_BACKGROUND_STYLES: Record<OpportunityStatus, string> = {
+  SAVED: "bg-brand-100",
+  INTERESTED: "bg-cyan-100",
+  APPLIED: "bg-purple-100",
+  INTERVIEWING: "bg-amber-100",
+  OFFER: "bg-green-100",
+  REJECTED: "bg-red-100",
+  ARCHIVED: "bg-slate-200",
 };
 
 const REMINDER_LABELS: Record<ReminderType, string> = {
@@ -314,24 +324,38 @@ export default function OpportunityDetailsScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" />
+      <View className="flex-1 items-center justify-center bg-surface">
+        <View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-100">
+          <ActivityIndicator color="#FF7A1A" />
+        </View>
+
+        <Text className="mt-4 text-base font-medium text-slate-500">
+          Loading opportunity...
+        </Text>
       </View>
     );
   }
 
   if (!opportunity) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-xl font-semibold text-slate-900">
+      <View className="flex-1 items-center justify-center bg-surface px-6">
+        <View className="h-16 w-16 items-center justify-center rounded-3xl bg-brand-100">
+          <Text className="text-2xl font-bold text-brand-600">?</Text>
+        </View>
+
+        <Text className="mt-5 text-xl font-bold text-slate-900">
           Opportunity not found
+        </Text>
+
+        <Text className="mt-2 text-center text-sm leading-5 text-slate-500">
+          This opportunity may have been removed or is no longer available.
         </Text>
 
         <Pressable
           onPress={() => router.back()}
-          className="mt-6 rounded-xl bg-blue-600 px-6 py-3"
+          className="mt-6 rounded-2xl bg-brand-500 px-6 py-3.5 active:bg-brand-600"
         >
-          <Text className="font-semibold text-white">Go back</Text>
+          <Text className="font-bold text-white">Go back</Text>
         </Pressable>
       </View>
     );
@@ -339,70 +363,104 @@ export default function OpportunityDetailsScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
-      contentContainerClassName="px-6 py-8"
+      className="flex-1 bg-surface"
+      contentContainerStyle={{
+        paddingHorizontal: 24,
+        paddingTop: 32,
+        paddingBottom: 48,
+      }}
+      showsVerticalScrollIndicator={false}
     >
-      {/* Back */}
-
-      <Pressable onPress={() => router.back()} className="mb-10">
-        <Text className="text-base font-semibold text-blue-700">← Back</Text>
-      </Pressable>
-
       {/* Header */}
-
-      <View className="flex-row items-start justify-between">
-        <View className="flex-1 pr-4">
-          <Text className="text-3xl font-bold text-slate-900">
-            {opportunity.title ?? "Untitled opportunity"}
-          </Text>
-
-          <Text className="mt-2 text-xl text-slate-600">
-            {opportunity.company ?? "Company not identified yet"}
-          </Text>
-        </View>
-
-        <View
-          className={`rounded-full px-3 py-2 ${
-            STATUS_STYLES[opportunity.status]
-          }`}
+      <View className="flex-row items-center justify-between">
+        <Pressable
+          onPress={() => router.back()}
+          className="h-10 w-10 items-center justify-center rounded-full bg-white active:bg-brand-50"
         >
-          <Text className="text-sm font-semibold">
-            {STATUS_LABELS[opportunity.status]}
-          </Text>
+          <Text className="text-xl text-slate-700">‹</Text>
+        </Pressable>
+
+        <Text className="text-sm font-semibold text-slate-400">
+          Opportunity
+        </Text>
+
+        <View className="w-10" />
+      </View>
+
+      {/* Opportunity hero */}
+      <View className="mt-8 rounded-3xl bg-white p-6">
+        <View className="flex-row items-start justify-between">
+          <View className="mr-4 flex-1">
+            <Text className="text-3xl font-bold tracking-tight text-slate-900">
+              {opportunity.title ?? "Untitled opportunity"}
+            </Text>
+
+            <Text className="mt-2 text-lg font-medium text-slate-500">
+              {opportunity.company ?? "Company not identified yet"}
+            </Text>
+          </View>
+
+          <View
+            className={`rounded-full px-3 py-2 ${
+              STATUS_BACKGROUND_STYLES[opportunity.status]
+            }`}
+          >
+            <Text
+              className={`text-sm font-bold ${
+                STATUS_TEXT_STYLES[opportunity.status]
+              }`}
+            >
+              {STATUS_LABELS[opportunity.status]}
+            </Text>
+          </View>
+        </View>
+
+        <View className="mt-6 h-px bg-slate-100" />
+
+        <View className="mt-5 flex-row items-center">
+          <View className="h-9 w-9 items-center justify-center rounded-xl bg-brand-100">
+            <Text className="text-xs font-bold text-brand-600">FROM</Text>
+          </View>
+
+          <View className="ml-3">
+            <Text className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Source
+            </Text>
+
+            <Text className="mt-0.5 text-sm font-semibold text-slate-700">
+              {opportunity.source}
+            </Text>
+          </View>
         </View>
       </View>
 
-      {/* Source */}
-
-      <View className="mt-10">
-        <Text className="text-sm font-medium uppercase tracking-wide text-slate-400">
-          Source
+      {/* Job link */}
+      <View className="mt-5 rounded-3xl border border-slate-200 bg-white p-5">
+        <Text className="text-xs font-bold uppercase tracking-widest text-slate-400">
+          Job posting
         </Text>
 
-        <Text className="mt-2 text-base font-semibold text-slate-800">
-          {opportunity.source}
-        </Text>
-      </View>
-
-      {/* Job URL */}
-
-      <View className="mt-8">
-        <Text className="text-sm font-medium uppercase tracking-wide text-slate-400">
-          Job URL
+        <Text
+          className="mt-2 text-sm leading-5 text-slate-500"
+          numberOfLines={2}
+        >
+          {opportunity.url}
         </Text>
 
-        <Pressable onPress={() => void handleOpenUrl()} className="mt-2">
-          <Text className="text-base text-blue-600 underline" numberOfLines={2}>
-            {opportunity.url}
-          </Text>
+        <Pressable
+          onPress={() => void handleOpenUrl()}
+          className="mt-4 flex-row items-center justify-center rounded-2xl bg-brand-500 py-3.5 active:bg-brand-600"
+        >
+          <Text className="font-bold text-white">Open job posting</Text>
+
+          <Text className="ml-2 text-lg font-bold text-white">↗</Text>
         </Pressable>
       </View>
 
-      {/* Description */}
-
+      {/* Notes */}
       {opportunity.description ? (
-        <View className="mt-8">
-          <Text className="text-sm font-medium uppercase tracking-wide text-slate-400">
+        <View className="mt-5 rounded-3xl border border-slate-200 bg-white p-5">
+          <Text className="text-xs font-bold uppercase tracking-widest text-slate-400">
             Notes
           </Text>
 
@@ -413,65 +471,112 @@ export default function OpportunityDetailsScreen() {
       ) : null}
 
       {/* Reminders */}
+      <View className="mt-5">
+        <View className="flex-row items-end justify-between">
+          <View>
+            <Text className="text-xl font-bold text-slate-900">Reminders</Text>
 
-      <View className="mt-10">
-        <Text className="text-sm font-medium uppercase tracking-wide text-slate-400">
-          Reminders
-        </Text>
+            <Text className="mt-1 text-sm text-slate-500">
+              Never lose track of your next step.
+            </Text>
+          </View>
+
+          {reminders.length > 0 ? (
+            <View className="rounded-full bg-brand-100 px-3 py-1.5">
+              <Text className="text-xs font-bold text-brand-700">
+                {reminders.length}
+              </Text>
+            </View>
+          ) : null}
+        </View>
 
         {isLoadingReminders ? (
-          <View className="mt-4">
-            <ActivityIndicator />
+          <View className="mt-5 items-center rounded-3xl border border-slate-200 bg-white p-8">
+            <ActivityIndicator color="#FF7A1A" />
           </View>
         ) : reminders.length === 0 ? (
-          <Text className="mt-3 text-base text-slate-500">
-            No reminders yet.
-          </Text>
+          <View className="mt-5 rounded-3xl border border-dashed border-brand-200 bg-brand-50 p-6">
+            <View className="h-11 w-11 items-center justify-center rounded-2xl bg-white">
+              <Text className="text-lg">⏰</Text>
+            </View>
+
+            <Text className="mt-4 text-base font-bold text-slate-900">
+              No reminders yet
+            </Text>
+
+            <Text className="mt-1 text-sm leading-5 text-slate-500">
+              Add one below so you know when it&apos;s time to take action.
+            </Text>
+          </View>
         ) : (
-          <View className="mt-4 gap-3">
+          <View className="mt-5 gap-3">
             {reminders.map((reminder) => (
               <View
                 key={reminder.id}
-                className={`rounded-xl border p-4 ${
+                className={`rounded-3xl border p-5 ${
                   reminder.completed
                     ? "border-slate-200 bg-slate-50"
-                    : "border-blue-200 bg-blue-50"
+                    : "border-brand-200 bg-white"
                 }`}
               >
                 <View className="flex-row items-start justify-between">
                   <View className="flex-1 pr-3">
-                    <Text
-                      className={`text-base font-semibold ${
-                        reminder.completed ? "text-slate-500" : "text-slate-900"
-                      }`}
-                    >
-                      {reminder.completed ? "✓ " : ""}
-                      {REMINDER_LABELS[reminder.type]}
-                    </Text>
+                    <View className="flex-row items-center">
+                      <View
+                        className={`h-9 w-9 items-center justify-center rounded-xl ${
+                          reminder.completed ? "bg-slate-200" : "bg-brand-100"
+                        }`}
+                      >
+                        <Text
+                          className={`text-sm font-bold ${
+                            reminder.completed
+                              ? "text-slate-500"
+                              : "text-brand-600"
+                          }`}
+                        >
+                          {reminder.completed ? "✓" : "!"}
+                        </Text>
+                      </View>
 
-                    <Text className="mt-1 text-sm text-slate-600">
+                      <Text
+                        className={`ml-3 text-base font-bold ${
+                          reminder.completed
+                            ? "text-slate-500"
+                            : "text-slate-900"
+                        }`}
+                      >
+                        {REMINDER_LABELS[reminder.type]}
+                      </Text>
+                    </View>
+
+                    <Text className="mt-3 text-sm text-slate-500">
                       {new Date(reminder.scheduledAt).toLocaleString()}
                     </Text>
 
                     {reminder.completed ? (
-                      <Text className="mt-1 text-sm text-green-600">
+                      <Text className="mt-1 text-sm font-semibold text-green-600">
                         Completed
                       </Text>
                     ) : null}
                   </View>
 
-                  <Pressable onPress={() => handleDeleteReminder(reminder)}>
-                    <Text className="font-semibold text-red-600">Delete</Text>
+                  <Pressable
+                    onPress={() => handleDeleteReminder(reminder)}
+                    className="rounded-full bg-red-50 px-3 py-2 active:bg-red-100"
+                  >
+                    <Text className="text-xs font-bold text-red-600">
+                      Delete
+                    </Text>
                   </Pressable>
                 </View>
 
                 {!reminder.completed ? (
                   <Pressable
                     onPress={() => void handleCompleteReminder(reminder)}
-                    className="mt-4 items-center rounded-lg bg-green-600 py-2"
+                    className="mt-4 items-center rounded-2xl bg-green-600 py-3"
                   >
-                    <Text className="font-semibold text-white">
-                      Mark complete
+                    <Text className="font-bold text-white">
+                      Mark as complete
                     </Text>
                   </Pressable>
                 ) : null}
@@ -481,15 +586,28 @@ export default function OpportunityDetailsScreen() {
         )}
 
         {/* Add reminder */}
+        <View className="mt-5 rounded-3xl border border-slate-200 bg-white p-5">
+          <View className="flex-row items-center">
+            <View className="h-10 w-10 items-center justify-center rounded-xl bg-brand-100">
+              <Text className="text-lg">⏰</Text>
+            </View>
 
-        <View className="mt-6 rounded-xl border border-slate-200 p-4">
-          <Text className="text-base font-semibold text-slate-900">
-            Add reminder
+            <View className="ml-3">
+              <Text className="text-base font-bold text-slate-900">
+                Add a reminder
+              </Text>
+
+              <Text className="mt-0.5 text-sm text-slate-500">
+                Choose when you want to follow up.
+              </Text>
+            </View>
+          </View>
+
+          <Text className="mt-6 text-sm font-semibold text-slate-700">
+            Reminder type
           </Text>
 
-          <Text className="mt-4 text-sm font-medium text-slate-600">Type</Text>
-
-          <View className="mt-2 flex-row flex-wrap gap-2">
+          <View className="mt-3 gap-2">
             {REMINDER_TYPES.map((type) => {
               const isSelected = selectedReminderType === type;
 
@@ -497,32 +615,50 @@ export default function OpportunityDetailsScreen() {
                 <Pressable
                   key={type}
                   onPress={() => setSelectedReminderType(type)}
-                  className={`rounded-full px-3 py-2 ${
-                    isSelected ? "bg-blue-600" : "bg-slate-100"
+                  className={`flex-row items-center justify-between rounded-2xl border px-4 py-3.5 ${
+                    isSelected
+                      ? "border-brand-200 bg-brand-50"
+                      : "border-slate-200 bg-slate-50"
                   }`}
                 >
                   <Text
                     className={`text-sm font-semibold ${
-                      isSelected ? "text-white" : "text-slate-700"
+                      isSelected ? "text-brand-700" : "text-slate-600"
                     }`}
                   >
                     {REMINDER_LABELS[type]}
                   </Text>
+
+                  <View
+                    className={`h-5 w-5 items-center justify-center rounded-full border ${
+                      isSelected
+                        ? "border-brand-500 bg-brand-500"
+                        : "border-slate-300 bg-white"
+                    }`}
+                  >
+                    {isSelected ? (
+                      <View className="h-2 w-2 rounded-full bg-white" />
+                    ) : null}
+                  </View>
                 </Pressable>
               );
             })}
           </View>
 
-          <Text className="mt-5 text-sm font-medium text-slate-600">
+          <Text className="mt-6 text-sm font-semibold text-slate-700">
             Scheduled for
           </Text>
 
           <Pressable
             onPress={() => setShowDatePicker(true)}
-            className="mt-2 rounded-lg border border-slate-300 px-4 py-3"
+            className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"
           >
-            <Text className="text-base text-slate-800">
+            <Text className="text-base font-medium text-slate-800">
               {selectedDate.toLocaleString()}
+            </Text>
+
+            <Text className="mt-1 text-xs text-slate-400">
+              Tap to choose a date and time
             </Text>
           </Pressable>
 
@@ -547,46 +683,46 @@ export default function OpportunityDetailsScreen() {
           <Pressable
             onPress={() => void handleCreateReminder()}
             disabled={isCreatingReminder}
-            className={`mt-5 items-center rounded-xl py-3 ${
-              isCreatingReminder ? "bg-blue-300" : "bg-blue-600"
+            className={`mt-5 items-center rounded-2xl py-3.5 ${
+              isCreatingReminder ? "bg-brand-300" : "bg-brand-500"
             }`}
           >
-            <Text className="font-semibold text-white">
-              {isCreatingReminder ? "Creating..." : "Add reminder"}
-            </Text>
+            {isCreatingReminder ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="font-bold text-white">Add reminder</Text>
+            )}
           </Pressable>
         </View>
       </View>
 
-      {/* Dates */}
-
-      <View className="mt-8">
-        <Text className="text-sm font-medium uppercase tracking-wide text-slate-400">
+      {/* Added */}
+      <View className="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
+        <Text className="text-xs font-bold uppercase tracking-widest text-slate-400">
           Added
         </Text>
 
-        <Text className="mt-2 text-base text-slate-600">
+        <Text className="mt-2 text-sm font-medium text-slate-600">
           {new Date(opportunity.createdAt).toLocaleDateString()}
         </Text>
       </View>
 
       {/* Actions */}
-
-      <View className="mt-12 gap-4">
+      <View className="mt-6 gap-3">
         <Pressable
           onPress={() => router.push(`/opportunity/${opportunity.id}/edit`)}
-          className="items-center rounded-xl bg-slate-800 py-4"
+          className="items-center rounded-2xl bg-slate-900 py-4 active:bg-slate-800"
         >
-          <Text className="text-base font-semibold text-white">
+          <Text className="text-base font-bold text-white">
             Edit opportunity
           </Text>
         </Pressable>
 
         <Pressable
-          onPress={handleOpenUrl}
-          className="items-center rounded-xl bg-blue-600 py-4"
+          onPress={() => void handleOpenUrl()}
+          className="items-center rounded-2xl border border-brand-200 bg-brand-50 py-4 active:bg-brand-100"
         >
-          <Text className="text-base font-semibold text-white">
+          <Text className="text-base font-bold text-brand-700">
             Open job link
           </Text>
         </Pressable>
@@ -594,13 +730,17 @@ export default function OpportunityDetailsScreen() {
         <Pressable
           onPress={handleDelete}
           disabled={isDeleting}
-          className="items-center rounded-xl bg-red-500 py-4"
+          className="items-center rounded-2xl bg-red-50 py-4 active:bg-red-100"
         >
-          <Text className="text-base font-semibold text-white">
+          <Text className="text-base font-bold text-red-600">
             {isDeleting ? "Deleting..." : "Delete opportunity"}
           </Text>
         </Pressable>
       </View>
+
+      <Text className="mt-5 text-center text-xs leading-5 text-slate-400">
+        Keep your opportunities organized. Save today, apply tomorrow.
+      </Text>
     </ScrollView>
   );
 }
