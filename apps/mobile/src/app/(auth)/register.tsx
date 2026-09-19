@@ -16,15 +16,16 @@ import { useAuth } from "@/contexts/auth-context";
 export default function RegisterScreen() {
   const { register } = useAuth();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRegister = async () => {
-    if (!email.trim() || !password) {
+    if (!name.trim() || !email.trim() || !password) {
       Alert.alert(
         "Missing information",
-        "Please enter your email and password.",
+        "Please enter your name, email, and password.",
       );
       return;
     }
@@ -41,6 +42,7 @@ export default function RegisterScreen() {
       setIsSubmitting(true);
 
       await register({
+        name: name.trim(),
         email: email.trim().toLowerCase(),
         password,
       });
@@ -88,6 +90,22 @@ export default function RegisterScreen() {
           {/* Form */}
           <View className="rounded-3xl border border-slate-100 bg-white p-5">
             <View className="gap-5">
+              <View>
+                <Text className="mb-2.5 text-sm font-semibold text-slate-800">
+                  Name
+                </Text>
+
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Your name"
+                  placeholderTextColor="#94A3B8"
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  editable={!isSubmitting}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-950"
+                />
+              </View>
               <View>
                 <Text className="mb-2.5 text-sm font-semibold text-slate-800">
                   Email

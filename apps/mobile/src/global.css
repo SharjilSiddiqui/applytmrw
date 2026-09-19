@@ -3,3 +3,18 @@
 @import "tailwindcss/utilities.css";
 
 @import "nativewind/theme";
+
+@theme {
+  --color-brand-50: #fff7f2;
+  --color-brand-100: #fff1e8;
+  --color-brand-200: #ffd9c2;
+  --color-brand-300: #ffb580;
+  --color-brand-400: #ff914d;
+  --color-brand-500: #ff7a1a;
+  --color-brand-600: #ea580c;
+  --color-brand-700: #c2410c;
+
+  --color-surface: #fffcfa;
+  --color-surface-card: #ffffff;
+  --color-surface-muted: #f8fafc;
+}

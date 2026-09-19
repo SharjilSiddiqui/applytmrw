@@ -32,6 +32,12 @@ export default function AppTabs() {
 
         <NativeTabs.Trigger.Icon sf="bell.fill" md="notifications" />
       </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="account">
+        <NativeTabs.Trigger.Label>Account</NativeTabs.Trigger.Label>
+
+        <NativeTabs.Trigger.Icon sf="person.fill" md="account_circle" />
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }

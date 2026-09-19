@@ -344,12 +344,10 @@ export default function RemindersScreen() {
       <Pressable
         onPress={() => void handleSave()}
         disabled={isSaving}
-        className={`mt-10 items-center rounded-2xl py-4 ${
-          isSaving ? "bg-brand-300" : "bg-brand-500 active:bg-brand-600"
-        }`}
+        className="mt-10 items-center rounded-2xl bg-brand-500 py-4 active:bg-brand-600 disabled:bg-brand-300"
       >
         {isSaving ? (
-          <ActivityIndicator color="white" />
+          <ActivityIndicator color="#FFFFFF" />
         ) : (
           <Text className="text-base font-bold text-white">
             Save reminder settings

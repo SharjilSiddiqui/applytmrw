@@ -34,6 +34,7 @@ enum ReminderType {
 
 model User {
   id           String   @id @default(uuid())
+  name         String   @default("Job seeker")
   email        String   @unique
   passwordHash String
 

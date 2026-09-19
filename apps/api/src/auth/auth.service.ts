@@ -31,6 +31,7 @@ export class AuthService {
 
     const user = await this.prisma.user.create({
       data: {
+        name: dto.name,
         email: dto.email,
         passwordHash,
       },
@@ -62,7 +63,11 @@ export class AuthService {
     return this.generateAuthResponse(user);
   }
 
-  private async generateAuthResponse(user: { id: string; email: string }) {
+  private async generateAuthResponse(user: {
+    id: string;
+    name: string;
+    email: string;
+  }) {
     const accessToken = await this.jwtService.signAsync({
       sub: user.id,
       email: user.email,
@@ -73,6 +78,7 @@ export class AuthService {
 
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
       },
     };

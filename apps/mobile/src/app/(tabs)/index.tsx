@@ -14,7 +14,7 @@ import { getOpportunities } from "@/lib/opportunities";
 import type { Opportunity } from "@/types/opportunity";
 
 export default function HomeScreen() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,12 +51,6 @@ export default function HomeScreen() {
   const handleRefresh = () => {
     setIsRefreshing(true);
     void fetchOpportunities();
-  };
-
-  const handleLogout = async () => {
-    await logout();
-
-    router.replace("/");
   };
 
   if (isLoading) {
@@ -109,10 +103,6 @@ export default function HomeScreen() {
                   Save today. Apply tomorrow.
                 </Text>
               </View>
-
-              <View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-500">
-                <Text className="text-xl font-bold text-white">A</Text>
-              </View>
             </View>
 
             {/* Welcome card */}
@@ -126,7 +116,7 @@ export default function HomeScreen() {
               </Text>
 
               <Text className="mt-2 text-xl font-bold text-white">
-                {user?.email ?? "Job seeker"}
+                Welcome back, {user?.name ?? "there"}.
               </Text>
 
               <Text className="mt-2 max-w-70 text-sm leading-5 text-orange-50">
@@ -258,16 +248,6 @@ export default function HomeScreen() {
               </Pressable>
             </View>
           ) : null
-        }
-        ListFooterComponent={
-          <Pressable
-            onPress={() => void handleLogout()}
-            className="mt-10 items-center py-4 active:opacity-60"
-          >
-            <Text className="text-sm font-semibold text-slate-400">
-              Log out
-            </Text>
-          </Pressable>
         }
       />
     </View>

@@ -1,5 +1,6 @@
 export interface AuthUser {
   id: string;
+  name: string;
   email: string;
 }
 
@@ -14,6 +15,7 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
+  name: string;
   email: string;
   password: string;
 }
