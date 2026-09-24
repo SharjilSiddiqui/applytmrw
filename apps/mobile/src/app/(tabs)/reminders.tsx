@@ -14,6 +14,7 @@ import {
   getReminderSettings,
   saveReminderSettings,
 } from "@/lib/reminder-settings";
+import { getOpportunities } from "@/lib/opportunities";
 import { scheduleReminderNotifications } from "@/lib/notifications";
 import type {
   ReminderFrequency,
@@ -130,7 +131,9 @@ export default function RemindersScreen() {
 
       await saveReminderSettings(settings);
 
-      await scheduleReminderNotifications(settings);
+      const opportunities = await getOpportunities();
+
+      await scheduleReminderNotifications(settings, opportunities.length);
 
       Alert.alert(
         "Reminders updated",

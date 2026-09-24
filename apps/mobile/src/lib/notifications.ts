@@ -74,10 +74,42 @@ function getNextScheduledDate(hour: number, minute: number): Date {
   return scheduledDate;
 }
 
-function getNotificationContent() {
+function getNotificationContent(opportunityCount: number) {
+  const messages =
+    opportunityCount === 0
+      ? [
+          "Your next opportunity is out there.",
+          "Ready to find something worth applying to?",
+        ]
+      : opportunityCount === 1
+        ? [
+            "You have an opportunity waiting.",
+            "Take another look at your saved opportunity.",
+          ]
+        : opportunityCount <= 5
+          ? [
+              "Your opportunities are waiting.",
+              `You have ${opportunityCount} saved opportunities to explore.`,
+            ]
+          : [
+              "Your opportunity list is growing.",
+              `You have ${opportunityCount} saved opportunities waiting.`,
+            ];
+
+  const message = messages[Math.floor(Math.random() * messages.length)];
+
+  const title =
+    opportunityCount === 0
+      ? "Keep moving 🚀"
+      : opportunityCount === 1
+        ? "One opportunity waiting"
+        : opportunityCount <= 5
+          ? "Your opportunities are waiting"
+          : "Your job search is growing";
+
   return {
-    title: "ApplyTMRW 🚀",
-    body: "Take a moment to review your opportunities.",
+    title,
+    body: message,
     sound: "default" as const,
     data: {
       type: REMINDER_NOTIFICATION_TYPE,
@@ -92,9 +124,10 @@ function getChannelId() {
 async function scheduleDailyReminder(
   hour: number,
   minute: number,
+  opportunityCount: number,
 ): Promise<void> {
   await Notifications.scheduleNotificationAsync({
-    content: getNotificationContent(),
+    content: getNotificationContent(opportunityCount),
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
       hour,
@@ -104,7 +137,10 @@ async function scheduleDailyReminder(
   });
 }
 
-async function scheduleEvery3Hours(settings: ReminderSettings): Promise<void> {
+async function scheduleEvery3Hours(
+  settings: ReminderSettings,
+  opportunityCount: number,
+): Promise<void> {
   const startMinutes = settings.hour * 60 + settings.minute;
 
   // Schedule 8 notifications:
@@ -115,11 +151,14 @@ async function scheduleEvery3Hours(settings: ReminderSettings): Promise<void> {
     const hour = Math.floor((totalMinutes % (24 * 60)) / 60);
     const minute = totalMinutes % 60;
 
-    await scheduleDailyReminder(hour, minute);
+    await scheduleDailyReminder(hour, minute, opportunityCount);
   }
 }
 
-async function scheduleEvery3Days(settings: ReminderSettings): Promise<void> {
+async function scheduleEvery3Days(
+  settings: ReminderSettings,
+  opportunityCount: number,
+): Promise<void> {
   const firstReminder = getNextScheduledDate(settings.hour, settings.minute);
 
   for (let index = 0; index < EVERY_3_DAYS_SCHEDULE_COUNT; index++) {
@@ -128,7 +167,7 @@ async function scheduleEvery3Days(settings: ReminderSettings): Promise<void> {
     scheduledDate.setDate(firstReminder.getDate() + index * 3);
 
     await Notifications.scheduleNotificationAsync({
-      content: getNotificationContent(),
+      content: getNotificationContent(opportunityCount),
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DATE,
         date: scheduledDate,
@@ -140,6 +179,7 @@ async function scheduleEvery3Days(settings: ReminderSettings): Promise<void> {
 
 export async function scheduleReminderNotifications(
   settings: ReminderSettings,
+  opportunityCount: number,
 ): Promise<void> {
   await cancelReminderNotifications();
 
@@ -157,15 +197,19 @@ export async function scheduleReminderNotifications(
 
   switch (settings.frequency) {
     case "DAILY":
-      await scheduleDailyReminder(settings.hour, settings.minute);
+      await scheduleDailyReminder(
+        settings.hour,
+        settings.minute,
+        opportunityCount,
+      );
       break;
 
     case "EVERY_3_HOURS":
-      await scheduleEvery3Hours(settings);
+      await scheduleEvery3Hours(settings, opportunityCount);
       break;
 
     case "EVERY_3_DAYS":
-      await scheduleEvery3Days(settings);
+      await scheduleEvery3Days(settings, opportunityCount);
       break;
   }
 }
